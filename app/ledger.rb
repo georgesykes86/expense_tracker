@@ -5,9 +5,12 @@ module ExpenseTracker
 
   class Ledger
     def record(expense)
-      unless expense.key?('payee')
-        message = 'Invalid expense: `payee` is required'
-        return RecordResult.new(false, nil, message)
+      expense_cats = ['payee', 'amount', 'date']
+      expense_cats.each do |key|
+        unless expense.key?(key)
+          message = "Invalid expense: `#{key}` is required"
+          return RecordResult.new(false, nil, message)
+        end
       end
       DB[:expenses].insert(expense)
       id = DB[:expenses].max(:id)
